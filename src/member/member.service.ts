@@ -47,6 +47,7 @@ export class MemberService {
   async getConversationTittle(userId, conversationId) {
     let listMember = await this.getByConversation(conversationId);
     let name = '';
+
     for await (const member of listMember) {
       if (member.userId !== userId) {
         name += member.nickName + ' , ';
@@ -152,5 +153,43 @@ export class MemberService {
       },
     ]);
     return res;
+  }
+
+  async getFriendId(id: string) {
+    const res = await this.memberModel.aggregate([
+      { $match: { userId: id } },
+      { $set: { conversation: { $toObjectId: '$conversationId' } } },
+      {
+        $lookup: {
+          from: 'conversations',
+          localField: 'conversation',
+          foreignField: '_id',
+          as: 'conversation',
+        },
+      },
+      {
+        $unwind: '$conversation',
+      },
+      {
+        $project: { conversationId: 0, __v: 0 },
+      },
+      {
+        $match: { 'conversation.type': 'direct' },
+      },
+    ]);
+
+    for await (const e of res) {
+      let listMember = await this.getByConversation(e.conversation._id);
+
+      for await (const member of listMember) {
+        if (member.userId !== e.userId) {
+          e.friendId = member.userId;
+          break;
+        }
+      }
+    }
+    return res.map((e) => {
+      return e.friendId;
+    });
   }
 }

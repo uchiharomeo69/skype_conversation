@@ -40,4 +40,9 @@ export class MemberController {
     const { userId1, userId2 } = query;
     return await this.memberService.getDirectConversation({ userId1, userId2 });
   }
+
+  @Get('/friend')
+  async getAllDirectConversation(@Query('id') id: string) {
+    return await this.memberService.getFriendId(id);
+  }
 }

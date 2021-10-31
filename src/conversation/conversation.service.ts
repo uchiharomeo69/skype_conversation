@@ -14,6 +14,7 @@ export class ConversationService {
     return await new this.conversationModel({
       title,
       type,
+
       createAt: new Date().toISOString(),
       updateAt: new Date().toISOString(),
       channelId: uuidv4(),
