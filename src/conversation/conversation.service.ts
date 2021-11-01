@@ -11,10 +11,15 @@ export class ConversationService {
   ) {}
 
   async create({ title, type }): Promise<Conversation> {
+    let avatar = '';
+    if (type === 'group') {
+      const randomId = Math.trunc(Math.random() * 1000);
+      avatar = `https://picsum.photos/id/${randomId}/300/300`;
+    }
     return await new this.conversationModel({
       title,
       type,
-
+      avatar,
       createAt: new Date().toISOString(),
       updateAt: new Date().toISOString(),
       channelId: uuidv4(),

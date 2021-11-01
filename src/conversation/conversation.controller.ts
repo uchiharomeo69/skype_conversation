@@ -1,15 +1,5 @@
-import { query } from 'express';
 import { ConversationService } from './conversation.service';
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Inject,
-  Param,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Put, Query } from '@nestjs/common';
 
 @Controller('conversation')
 export class ConversationController {
